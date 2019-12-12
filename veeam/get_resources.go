@@ -2,6 +2,7 @@ package veeam
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"log"
 	"net/http"
@@ -90,8 +91,15 @@ func addVMToJob(config Config, jobID, vmObjectRef, vmName, vmOrder, vmGpo string
 	if vmOrder == "" {
 		vmOrder = "0"
 	}
-	requestbody := "<?xml version=\"1.0\" encoding=\"utf-8\"?><CreateObjectInJobSpec xmlns=\"http://www.veeam.com/ent/v1.0\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><HierarchyObjRef>" + vmObjectRef + "</HierarchyObjRef><HierarchyObjName>" + vmName + "</HierarchyObjName><DisplayName>" + vmName + "</DisplayName> <Order>" + vmOrder + "</Order><GuestProcessingOptions><VssSnapshotOptions><VssSnapshotMode>RequireSuccess</VssSnapshotMode><IsCopyOnly>false</IsCopyOnly>   </VssSnapshotOptions><WindowsGuestFSIndexingOptions><FileSystemIndexingMode>ExceptSpecifiedFolders</FileSystemIndexingMode> <IncludedIndexingFolders/><ExcludedIndexingFolders><Path>%windir%</Path><Path>%ProgramFiles%</Path><Path>%ProgramFiles(x86)%</Path>  <Path>%ProgramW6432%</Path><Path>%TEMP%</Path></ExcludedIndexingFolders></WindowsGuestFSIndexingOptions><LinuxGuestFSIndexingOptions> <FileSystemIndexingMode>ExceptSpecifiedFolders</FileSystemIndexingMode><IncludedIndexingFolders/><ExcludedIndexingFolders><Path>/cdrom</Path> <Path>/dev</Path><Path>/media</Path><Path>/mnt</Path><Path>/proc</Path><Path>/tmp</Path><Path>/lost+found</Path></ExcludedIndexingFolders>    </LinuxGuestFSIndexingOptions><SqlBackupOptions><TransactionLogsProcessing>OnlyOnSuccessJob</TransactionLogsProcessing> <BackupLogsFrequencyMin>15</BackupLogsFrequencyMin><UseDbBackupRetention>true</UseDbBackupRetention><RetainDays>15</RetainDays>               </SqlBackupOptions><WindowsCredentialsId/><LinuxCredentialsId/></GuestProcessingOptions></CreateObjectInJobSpec>"
-	request, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(requestbody)))
+	var requestbody CreateObjectInJobSpec
+	requestbody.HierarchyObjRef = vmObjectRef
+	requestbody.HierarchyObjName = vmName
+	requestbody.Order = vmOrder
+	requestbody.DisplayName = vmName
+	requestbody.GuestProcessingOptions.VssSnapshotOptions.VssSnapshotMode = "RequireSuccess"
+	requestbody.GuestProcessingOptions.VssSnapshotOptions.IsCopyOnly = "false"
+	body, err := xml.MarshalIndent(&requestbody, "", "")
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(body)))
 	if err != nil {
 		log.Printf("[ERROR] Error in creating http Request %s", err)
 		return nil, err

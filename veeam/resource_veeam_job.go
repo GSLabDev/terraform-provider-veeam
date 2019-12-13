@@ -52,13 +52,13 @@ func resourceVeeamJobVMCreate(d *schema.ResourceData, meta interface{}) error {
 		log.Printf("[ERROR] Error in getting JOB ID %s", err)
 		return fmt.Errorf("[Error]  Error: %s", err.Error())
 	}
-	//fetch vmObjectReference
+	//fetch vmObjectReference using vmname
 	vmObjectRef, err := getVMObject(config, vmName)
 	if err != nil {
 		log.Printf("[ERROR] Error in getting VM Object Reference %s", err)
 		return fmt.Errorf("[Error]  Error: %s", err.Error())
 	}
-
+	//add vm to backup job
 	addVM, err := addVMToJob(config, jobID, vmObjectRef, vmName, vmOrder, vmGpo)
 	log.Println(addVM)
 	if err != nil {
@@ -108,13 +108,14 @@ func resourceVeeamJobVMDelete(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("[Error]  Error: %s", err.Error())
 	}
 
+	//fetch vm id to delete vm from job
 	vmID, err := checkVMExists(config, jobID, vmName)
 	fmt.Println(vmID)
 	if err != nil {
 		d.SetId("")
 		return fmt.Errorf("[Error]  Error: %s", err.Error())
 	}
-
+	//delete vm from the backup job
 	response, err := deleteVMFromJob(config, jobID, vmID)
 	fmt.Println(response)
 	if err != nil {

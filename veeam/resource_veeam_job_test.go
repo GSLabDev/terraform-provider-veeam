@@ -13,10 +13,10 @@ import (
 
 func testBasicPreCheckVirtualMachine(t *testing.T) {
 	if v := os.Getenv("VEEAM_JOB_NAME"); v == "" {
-		t.Fatal("VEEAM_BACKUP_JOB must be set for acceptance tests")
+		t.Fatal("VEEAM_JOB_NAME must be set for acceptance tests")
 	}
 	if v := os.Getenv("VEEAM_VM_NAME"); v == "" {
-		t.Fatal("VEEAM_VIRTUAL_MACHINE must be set for acceptance tests")
+		t.Fatal("VEEAM_VM_NAME must be set for acceptance tests")
 	}
 
 }

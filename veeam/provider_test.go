@@ -36,7 +36,7 @@ func testAccPreCheck(t *testing.T) {
 	}
 
 	if v := os.Getenv("VEEAM_SERVER_USERNAME"); v == "" {
-		t.Fatal("SCVMM_SERVER_USER must be set for acceptance tests")
+		t.Fatal("VEEAM_SERVER_USERNAME must be set for acceptance tests")
 	}
 
 	if v := os.Getenv("VEEAM_SERVER_PASSWORD"); v == "" {

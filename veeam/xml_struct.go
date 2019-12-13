@@ -13,12 +13,14 @@ type CreateObjectInJobSpec struct {
 	HierarchyObjName       string   `xml:"HierarchyObjName"`
 	DisplayName            string   `xml:"DisplayName"`
 	Order                  string   `xml:"Order"`
-	GuestProcessingOptions struct {
-		Text               string `xml:",chardata"`
-		VssSnapshotOptions struct {
-			Text            string `xml:",chardata"`
-			VssSnapshotMode string `xml:"VssSnapshotMode"`
-			IsCopyOnly      string `xml:"IsCopyOnly"`
-		} `xml:"VssSnapshotOptions"`
-	} `xml:"GuestProcessingOptions"`
+	GuestProcessingOptions gpo      `xml:"GuestProcessingOptions"`
+}
+type gpo struct {
+	Text               string      `xml:",chardata"`
+	VssSnapshotOptions vsssnapshot `xml:"VssSnapshotOptions"`
+}
+type vsssnapshot struct {
+	Text            string `xml:",chardata"`
+	VssSnapshotMode string `xml:"VssSnapshotMode"`
+	IsCopyOnly      string `xml:"IsCopyOnly"`
 }

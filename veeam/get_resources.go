@@ -91,6 +91,7 @@ func addVMToJob(config Config, jobID, vmObjectRef, vmName, vmOrder, vmGpo string
 	if vmOrder == "" {
 		vmOrder = "0"
 	}
+
 	var requestbody CreateObjectInJobSpec
 	requestbody.HierarchyObjRef = vmObjectRef
 	requestbody.HierarchyObjName = vmName
@@ -98,9 +99,12 @@ func addVMToJob(config Config, jobID, vmObjectRef, vmName, vmOrder, vmGpo string
 	requestbody.DisplayName = vmName
 	requestbody.GuestProcessingOptions.VssSnapshotOptions.VssSnapshotMode = "RequireSuccess"
 	requestbody.GuestProcessingOptions.VssSnapshotOptions.IsCopyOnly = "false"
+	requestbody.Xmlns = "http://www.veeam.com/ent/v1.0"
+	requestbody.Xsd = "http://www.w3.org/2001/XMLSchema"
+	requestbody.Xsi = "http://www.w3.org/2001/XMLSchema-instance"
 	body, err := xml.MarshalIndent(&requestbody, "", "")
 
-	request, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(body)))
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(string(body))))
 	if err != nil {
 		log.Printf("[ERROR] Error in creating http Request %s", err)
 		return nil, err

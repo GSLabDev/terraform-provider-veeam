@@ -118,7 +118,7 @@ func addVMToJob(config Config, jobID, vmObjectRef, vmName, vmOrder, vmGpo string
 	return response, nil
 }
 
-//checkVMExists ... check vm exists in job or not if exists nit returns vm id
+//checkVMExists ... check vm exists in job or not if exists it returns vm id
 func checkVMExists(config Config, jobID, vmName string) (string, error) {
 	url := "jobs/" + jobID + "/includes"
 

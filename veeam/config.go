@@ -17,12 +17,13 @@ type Config struct {
 	Port     int
 	Username string
 	Password string
+	Scheme   string
 }
 
 // GetResponse ... get Response according to request
 func (c *Config) GetResponse(request *http.Request) ([]byte, error) {
 
-	token, err := GetToken(c.ServerIP, c.Port, c.Username, c.Password)
+	token, err := GetToken(c.ServerIP, c.Port, c.Username, c.Password, c.Scheme)
 	if err != nil {
 		log.Println("[ERROR] Error in getting token")
 		return nil, fmt.Errorf("[Error] .\n Error: %s", err.Error())
@@ -32,7 +33,7 @@ func (c *Config) GetResponse(request *http.Request) ([]byte, error) {
 	}
 
 	var tempURL *url.URL
-	tempURL, err = url.Parse("http://" + c.ServerIP + ":" + strconv.Itoa(c.Port) + "/api/" + request.URL.String())
+	tempURL, err = url.Parse(c.Scheme + "://" + c.ServerIP + ":" + strconv.Itoa(c.Port) + "/api/" + request.URL.String())
 	if err != nil {
 		log.Println("[Error] URL is not in correct format")
 		return nil, fmt.Errorf("[Error]  Error: %s", err.Error())

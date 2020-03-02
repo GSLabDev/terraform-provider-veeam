@@ -9,9 +9,9 @@ import (
 )
 
 // GetToken ... Get Token from existing store or create a new one.
-func GetToken(serverIP string, port int, username, password string) (string, error) {
+func GetToken(serverIP string, port int, username, password, scheme string) (string, error) {
 
-	token, err := getTokenFromHost(serverIP, port, username, password)
+	token, err := getTokenFromHost(serverIP, port, username, password, scheme)
 	if err != nil {
 		log.Printf("[Error] Cannot get Token : %s", err.Error())
 		return "", err
@@ -19,8 +19,8 @@ func GetToken(serverIP string, port int, username, password string) (string, err
 	return token, nil
 }
 
-func getTokenFromHost(serverIP string, port int, username, password string) (string, error) {
-	req, err := http.NewRequest("POST", "http://"+serverIP+":"+strconv.Itoa(port)+"/api/sessionMngr/?v=v1_4", nil)
+func getTokenFromHost(serverIP string, port int, username, password, scheme string) (string, error) {
+	req, err := http.NewRequest("POST", scheme+"://"+serverIP+":"+strconv.Itoa(port)+"/api/sessionMngr/?v=v1_4", nil)
 	if err != nil {
 		log.Println("[ERROR] Error while requesting sessionID ", err)
 		return "", err

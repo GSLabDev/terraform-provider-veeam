@@ -39,6 +39,13 @@ func Provider() terraform.ResourceProvider {
 				Description: "The user password of the VEEAM Server",
 				DefaultFunc: schema.EnvDefaultFunc("VEEAM_SERVER_PASSWORD", nil),
 			},
+
+			"scheme": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The scheme used to connect to the VEEAM server (either HTTP or HTTPS)",
+				DefaultFunc: schema.EnvDefaultFunc("VEEAM_SERVER_SCHEME", "http"),
+			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -55,6 +62,7 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		Port:     d.Get("port").(int),
 		Username: d.Get("username").(string),
 		Password: d.Get("password").(string),
+		Scheme:   d.Get("scheme").(string),
 	}
 	log.Printf("[DEBUG] Connecting to veeam backup server.......")
 	return config, nil

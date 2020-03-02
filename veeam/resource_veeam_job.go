@@ -33,6 +33,11 @@ func resourceVeeamJobVM() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"vm_hierarchy_name": &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+				ForceNew: true,
+			},
 		},
 	}
 }
@@ -45,6 +50,7 @@ func resourceVeeamJobVMCreate(d *schema.ResourceData, meta interface{}) error {
 	vmName := d.Get("vm_name").(string)
 	vmOrder := d.Get("vm_order").(string)
 	vmGpo := d.Get("vm_gpo").(string)
+	vmHierarchyName := d.Get("vm_hierarchy_name").(string)
 
 	//fetch job ID
 	jobID, err := getJobID(config, jobName)
@@ -53,7 +59,7 @@ func resourceVeeamJobVMCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("[Error]  Error: %s", err.Error())
 	}
 	//fetch vmObjectReference using vmname
-	vmObjectRef, err := getVMObject(config, vmName)
+	vmObjectRef, err := getVMObject(config, vmName, vmHierarchyName)
 	if err != nil {
 		log.Printf("[ERROR] Error in getting VM Object Reference %s", err)
 		return fmt.Errorf("[Error]  Error: %s", err.Error())

@@ -40,7 +40,7 @@ func getJobID(config Config, jobName string) (string, error) {
 }
 
 //getVmObject ... fetch vm object reference to add vm in job
-func getVMObject(config Config, vmName string) (string, error) {
+func getVMObject(config Config, vmName, vmHierarchyName string) (string, error) {
 	url := "hierarchyRoots"
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -57,7 +57,13 @@ func getVMObject(config Config, vmName string) (string, error) {
 		log.Fatal(err)
 	}
 
-	hierarchyRootID := gjson.Get(responseToString, "Refs.0.UID")
+	var hierarchyRootID gjson.Result
+	if vmHierarchyName == "" {
+		hierarchyRootID = gjson.Get(responseToString, "Refs.0.UID")
+	} else {
+		hierarchyRootID = gjson.Get(responseToString, "Refs.#(Name="+vmHierarchyName+").UID")
+	}
+
 	log.Println(hierarchyRootID.String())
 
 	newurl := "lookup?host=" + hierarchyRootID.String() + "&name=" + vmName + "&type=Vm"

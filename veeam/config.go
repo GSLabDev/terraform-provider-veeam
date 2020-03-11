@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 // Config ... configuration for VEEAM
@@ -64,7 +65,8 @@ func (c *Config) GetResponse(request *http.Request) ([]byte, error) {
 		log.Println("success..")
 
 	} else {
-		return nil, fmt.Errorf("[Error]  Error: %s", err.Error())
+		data, _ := ioutil.ReadAll(resp.Body)
+		return nil, fmt.Errorf("[Error]  Error %d: %s", resp.StatusCode, strings.ToValidUTF8(string(data), ""))
 	}
 
 	return ioutil.ReadAll(resp.Body)
